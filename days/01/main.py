@@ -11,13 +11,12 @@ data.sort()
 
 def part_one():
     for i, lo in enumerate(data):
+        # Go backwards through the sorted list, until it gets to `i`:
         for hi in data[:i:-1]:
             if lo + hi < 2020: 
                 break
-            elif lo + hi == 2020:
-                 print("Part one answer:")
-                 print(lo, "+", hi, "=", lo+hi)
-                 print(lo, "*", hi, "=", lo*hi)
+            if lo + hi == 2020:
+                 print("Part one answer:", lo * hi)
                  return
 
 def part_two():
@@ -28,10 +27,8 @@ def part_two():
                 sum = psum + top
                 if sum < 2020:
                     break
-                elif sum == 2020:
-                    print("Part two answer:")
-                    print(bot, "+", mid, "+", top, "=", bot+mid+top)
-                    print(bot, "*", mid, "*", top, "=", bot*mid*top)
+                if sum == 2020:
+                    print("Part two answer:", bot * mid * top)
                     return
 
 part_one()
