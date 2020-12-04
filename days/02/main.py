@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# NOTE: Must use format.sh to get the data in a better format before starting.
 import csv
 
 data = []
