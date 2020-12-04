@@ -10,9 +10,25 @@ with open('formatted.txt', 'r') as file:
             data_obj[item[:3]] = item[4:]
         data.append(data_obj)
 
-
 def part_one():
-    print("part one answer:", "232 (gotten from the grep)")
+    count = 0
+    for item in data:
+        if (not 'byr' in item):
+            continue
+        if (not 'iyr' in item):
+            continue
+        if (not 'eyr' in item):
+            continue
+        if (not 'hgt' in item):
+            continue
+        if (not 'hcl' in item):
+            continue
+        if (not 'ecl' in item):
+            continue
+        if (not 'pid' in item):
+            continue
+        count += 1
+    print("part one answer:", count)
 
 def valid_byr(input):
     try:
