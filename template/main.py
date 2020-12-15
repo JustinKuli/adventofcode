@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-import csv
-import string
 
 data = []
 with open('data.txt', 'r') as file:
-    reader = csv.reader(file)
-    for row in reader:
-        data.append(row[0])
+    for line in file:
+        data.append(line[:-1]) # Strip the newline char!
 
 def part_one():
     acc = 0
