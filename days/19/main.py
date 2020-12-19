@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
-# NOTE! Part 2 uses a different data input.
+# NOTE! Part 1 and 2 use different data inputs!
 
 data = []
 with open('data.txt', 'r') as file:
@@ -13,104 +13,97 @@ with open('rules.txt', 'r') as file:
     for line in file:
         data_rules.append(line[:-1])
 
-class Rule:
-    def __init__(self, kind, data):
-        self.kind = kind
-        self.data = data
-    def __repr__(self):
-        return "<kind: '{0}', data: '{1}'>".format(self.kind, self.data)
-
-custom_rule_ctr = -1
-def build_rule(r):
-    global custom_rule_ctr
-    global rules
-    r = r.strip()
-    if '"' in r:
-        # Simple rule of just a letter
-        return Rule('simple', r.split(sep='"')[1])
-    elif '|' in r:
-        # Must satisfy at least one of two other rules
-        rules[custom_rule_ctr] = build_rule(r.split('|')[0])
-        custom_rule_ctr -= 1
-        rules[custom_rule_ctr] = build_rule(r.split('|')[1])
-        custom_rule_ctr -= 1
-        return Rule('or', (custom_rule_ctr+2, custom_rule_ctr+1))
-    elif len(r.split()) > 1:
-        return Rule('and', [int(x) for x in r.split()])
-    elif len(r.split()) == 1:
-        return Rule('ref', int(r))
-    else:
-        print("Reached unreachable case in build_rule", r)
-        sys.exit(1)
-
+extra_index = -1
 rules = dict()
+class Rule:
+    def __init__(self, rule):
+        global rules
+        global extra_index
+
+        rule = rule.strip()
+        if '"' in rule:
+            # Just a simple character match
+            self.kind = "char"
+            self.char = rule.split(sep='"')[1]
+
+        elif "|" in rule:
+            # Needs to match one "or" the other
+            self.kind = "or"
+            rules[extra_index] = Rule(rule.split('|')[0])
+            rules[extra_index-1] = Rule(rule.split('|')[1])
+            self.subrules = (extra_index, extra_index-1)
+            extra_index -= 2
+
+        else:
+            # Needs to match all of them in sequence.
+            # Note that a single ref will also fall into this category.
+            self.kind = "and"
+            self.subrules = [int(r) for r in rule.split()]
+
+    def __repr__(self):
+        if self.kind == "char":
+            return "Char_Rule({0})".format(self.char)
+        if self.kind == "or":
+            return "Or_Rule({0})".format(self.subrules)
+        if self.kind == "and":
+            return "And_Rule({0})".format(self.subrules)
+        return "Invalid_Rule(no 'kind' set)"
+
+    # Returns the input after the part matching the rule is removed.
+    # If the input does not match the rule, 'c' is returned as a sentinel value.
+    # If the rule (or a subrule) is of kind 'or', then this will return a list of
+    #  possible strings that could be left after matching pieces are removed.
+    # If the input is a list, it will handle each individually, and combine the lists.
+    def remove_match(self, inp):
+        if isinstance(inp, list):
+            rms = []
+            for inp_str in inp:
+                rm = self.remove_match(inp_str)
+                if rm == "c":
+                    continue # if it doesn't match, don't even add it to the list.
+                if isinstance(rm, list):
+                    rms.extend(rm)
+                rms.append(rm)
+
+            if len(rms) == 0:
+                return "c"
+            return rms
+
+        if len(inp) == 0 or inp == "c":
+            return "c"
+        
+        if self.kind == "char":
+            if inp[0] == self.char:
+                return inp[1:]
+            return "c"
+        if self.kind == "and":
+            for r in self.subrules:
+                inp = rules[r].remove_match(inp)
+            return inp
+        if self.kind == "or":
+            rm0 = rules[self.subrules[0]].remove_match(inp)
+            rm1 = rules[self.subrules[1]].remove_match(inp)
+            if rm0 == "c":
+                return rm1
+            if rm1 == "c":
+                return rm0
+            return [rm0, rm1]
+
 def get_rules():
     global rules
     for r in data_rules:
-        rule_n = int(r.split(sep=":")[0])
-        rule = build_rule(r.split(sep=":")[1])
-        rules[rule_n] = rule        
-
-# returns the portion of the string after the part matching the rule is removed.
-# if the string does not match the rule, 'c' is returned, as a sentinel value.
-def matches_rule(inp, rules, i):
-    if isinstance(inp, list):
-        # Now we're really cooking with fire.
-        matches = []
-        for input in inp:
-            m = matches_rule(input, rules, i)
-            if m == "c":
-                continue
-            if isinstance(m, list):
-                matches.extend(m)
-            else:
-                matches.append(m)
-        if len(matches) == 0:
-            return "c"
-        return matches
-
-    if len(inp) == 0:
-        return "c"
-    if inp == "c":
-        return "c"
-
-    rule = rules[i]
-    if rule.kind == "simple":
-        if inp[0] == rule.data:
-            return inp[1:]
-        return "c"
-    if rule.kind == "and":
-        for r in rule.data:
-            if inp == "c":
-                return "c"
-            if len(inp) == 0:
-                return "c"
-            inp = matches_rule(inp, rules, r)
-        return inp
-    if rule.kind == "or":
-        sub1 = matches_rule(inp, rules, rule.data[0])
-        if sub1 == "c":
-            return matches_rule(inp, rules, rule.data[1])
-        
-        sub2 = matches_rule(inp, rules, rule.data[1])
-        if sub2 == "c":
-            return sub1
-
-        return [sub1, sub2]
-    if rule.kind == "ref":
-        return matches_rule(inp, rules, rule.data)
-    print("Reached unreachable case in matches_rule", inp, i)
-    sys.exit(1)
+        piece = r.split(sep=":")
+        rules[int(piece[0])] = Rule(piece[1])
 
 def part_one():
     get_rules()
 
     count = 0
     for d in data:
-        m = matches_rule(d, rules, 0)
-        if isinstance(m, list) and "" in m:
+        rm = rules[0].remove_match(d)
+        if isinstance(rm, list) and "" in rm:
             count += 1
-        if isinstance(m, str) and len(m) == 0:
+        if isinstance(rm, str) and len(rm) == 0:
             count += 1
     print("answer:", count)
 
