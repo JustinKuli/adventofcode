@@ -2,6 +2,7 @@
 
 use std::error::Error;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 fn main() {
     let data = read_data(String::from("data.txt"))
@@ -103,20 +104,28 @@ fn lookup(data: Vec<String>, i: i32, j: i32) -> Option<i32> {
 }
 
 #[derive(Clone)]
-#[derive(Copy)]
+#[derive(Debug)]
 #[derive(PartialEq, Eq, Hash)]
 struct BasinPart {
     start: i32,
     end: i32,
     size: i32,
+    adj: Vec<i32>,
+    id: i32,
 }
 
-fn get_basin_parts(line: String) -> Vec<BasinPart> {
+fn get_basin_parts(line: String, start_id: i32) -> Vec<BasinPart> {
     let mut v = Vec::new();
 
     let mut in_basin = false;
     let mut i = 0;
-    let mut bp = BasinPart{start: 0, end: 0, size: 0};
+    let mut bp = BasinPart{
+        start: 0,
+        end: 0,
+        size: 0,
+        adj: Vec::new(),
+        id: start_id,
+    };
     for c in line.chars() {
         // println!("{}", c);
         if c == '9' {
@@ -132,7 +141,13 @@ fn get_basin_parts(line: String) -> Vec<BasinPart> {
                 bp.end = i;
             } else {
                 // start basin part
-                bp = BasinPart{start: i, end: i, size: 0};
+                bp = BasinPart{
+                    start: i,
+                    end: i,
+                    size: 0,
+                    adj: Vec::new(),
+                    id: start_id + i,
+                };
                 in_basin = true;
             }
         } 
@@ -160,45 +175,76 @@ fn overlap(one: BasinPart, two: BasinPart) -> bool {
 fn part_two(data: Vec<csv::StringRecord>) -> Result<String, Box<dyn Error>> {
     let lines = ss_string(data.clone())?;
 
-    let mut basin_sizes = HashMap::new(); // index -> size
-    let mut basin_map = HashMap::new(); // bps -> index
-    let mut map_index = 0;
+    let mut map = HashMap::<i32, BasinPart>::new();
+    let mut parts_above = Vec::<BasinPart>::new();
 
-    let mut last_bps = Vec::new();
+    let mut line_num = 1000;
     for line in lines {
-        let new_bps = get_basin_parts(line);
-        for bp in new_bps.clone() {
-            let mut overlaps = Vec::new();
-            for prev in last_bps.clone() {
-                if overlap(bp, prev) {
-                    overlaps.push(prev)
-                }
-            }
-            match overlaps.len() {
-                0 => {
-                    // new item in basin_sizes
-                    basin_map.insert(bp, map_index);
-                    basin_sizes.insert(map_index, bp.size);
-                    map_index += 1;
-                },
-                1 => {
-                    // update existing item in basin_sizes
-                    let overlapping_bp = overlaps.get(0).unwrap();
-                    let index = basin_map.get(overlapping_bp).unwrap();
+        let parts = get_basin_parts(line, line_num);
+        for curr in parts.clone() {
+            map.insert(curr.id, curr.clone());
+            for prev in parts_above.clone() {
+                if overlap(curr.clone(), prev.clone()) {
+                    let mut new_curr = map.remove(&curr.id).unwrap();
+                    new_curr.adj.push(prev.id);
+                    map.remove(&curr.id);
+                    map.insert(curr.id, new_curr);
 
-                    // basically a += here:
-                    let basin = basin_sizes.get(index).unwrap();
-                    basin_sizes.insert(*index, basin + bp.size);
-                },
-                _ => {
-                    // combine all the existing items, remove extras.
+                    let mut new_prev = map.remove(&prev.id).unwrap();
+                    new_prev.adj.push(curr.id);
+                    map.insert(prev.id, new_prev);
                 }
             }
         }
-        last_bps = new_bps;
+        parts_above = parts;
+        line_num += 1000
     }
 
-    return Ok(String::from(""));
+    let mut sizes = HashMap::<i32, i32>::new();
+    let mut visited = HashSet::<i32>::new();
+
+    for (idx, bp) in map.clone() {
+        if visited.contains(&idx) {
+            // was already present.
+            continue
+        }
+        visited.insert(idx);
+
+        let mut size = bp.size;
+        let mut to_visit = HashSet::<i32>::new();
+        for i in bp.adj {
+            to_visit.insert(i);
+        }
+
+        while !to_visit.is_empty() {
+            let v_i = to_visit.iter().cloned().next().unwrap();
+            to_visit.remove(&v_i);
+            visited.insert(v_i);
+
+            let v = map.get(&v_i).unwrap();
+            size += v.size;
+            for adj in v.adj.clone() {
+                if !visited.contains(&adj) {
+                    to_visit.insert(adj);
+                }
+            }
+        }
+
+        sizes.insert(idx, size);
+    }
+
+    let mut all_sizes: Vec<i32> = sizes.values().cloned().collect();
+    all_sizes.sort();
+
+    let mut acc = 1;
+    for i in 0..3 {
+        let s = all_sizes.pop().unwrap();
+        println!("{}",s);
+        acc *= s;
+    }
+
+    return Ok(acc.to_string());
+    // 856716 is too low?
 }
 
 #[allow(dead_code)]
