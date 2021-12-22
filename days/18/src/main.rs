@@ -4,7 +4,7 @@ use std::error::Error;
 use regex::Regex;
 
 fn main() {
-    let data = read_data(String::from("data.txt"))
+    let data = read_data(String::from("small-data.txt"))
         .expect("Failed to get data");
 
     let ans1 = part_one(data.clone()).expect("Failed to get answer 1");
@@ -14,7 +14,7 @@ fn main() {
     println!("Part two answer: {}", ans2); // takes about 5.5 minutes on my machine
 }
 
-const DEBUG: bool = false;
+const DEBUG: bool = true;
 
 fn part_one(data: Vec<String>) -> Result<String, Box<dyn Error>> {
     let mut sum = String::from("");
