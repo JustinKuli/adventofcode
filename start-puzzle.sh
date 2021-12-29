@@ -13,7 +13,7 @@ curl "https://adventofcode.com/2019/day/${saniday}/input" \
   -H 'cache-control: no-cache' \
   -H 'user-agent: idk' \
   -H "$(cat cookie-header.txt)" \
-  -H 'accept: text/html' > "${wd}/data.txt"
+  -H 'accept: text/html' > "${wd}/data.txt" || echo "couldn't get puzzle input"
 
 cp ./template/main.rs "${wd}/src/main.rs"
 cp ./template/format.sh "${wd}/format.sh"
