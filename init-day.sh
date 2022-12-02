@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Use: `./init-day.sh 07`
 set -euxo pipefail
 
 saniday=$(echo ${1} | sed -z 's/^0//g') # remove leading 0 if present
