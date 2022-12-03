@@ -6,6 +6,7 @@ saniday=$(echo ${1} | sed -z 's/^0//g') # remove leading 0 if present
 
 mkdir "day${1}"
 
+# Not working :(
 curl "https://adventofcode.com/2021/day/${saniday}/input" \
   -H 'pragma: no-cache' \
   -H 'cache-control: no-cache' \
@@ -38,7 +39,7 @@ func Run(){
 		}
 	}
 
-    fmt.Println("initialized day ${1}")
+    fmt.Printf("initialized day %v\n", "${1}")
 }
 EOF
 
