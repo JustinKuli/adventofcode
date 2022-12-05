@@ -16,27 +16,29 @@ func Run() {
 	sum := 0
 	sum2 := 0
 	for fs.Scan() {
+		// each line has a pair of section assignments
 		line := fs.Text()
+		sectionAssignment := strings.Split(line, ",")
 
-		elfRange := strings.Split(line, ",")
+		leftLimits := strings.Split(sectionAssignment[0], "-")
+		lMin, _ := strconv.Atoi(leftLimits[0])
+		lMax, _ := strconv.Atoi(leftLimits[1])
 
-		e0limits := strings.Split(elfRange[0], "-")
-		e0min, _ := strconv.Atoi(e0limits[0])
-		e0max, _ := strconv.Atoi(e0limits[1])
+		rightLimits := strings.Split(sectionAssignment[1], "-")
+		rMin, _ := strconv.Atoi(rightLimits[0])
+		rMax, _ := strconv.Atoi(rightLimits[1])
 
-		e1limits := strings.Split(elfRange[1], "-")
-		e1min, _ := strconv.Atoi(e1limits[0])
-		e1max, _ := strconv.Atoi(e1limits[1])
-
-		if e1min < e0min {
-			// swap so e0min is always at or less than e1min
-			e0min, e0max, e1min, e1max = e1min, e1max, e0min, e0max
+		if rMin < lMin {
+			// swap so the left range actually starts to the left
+			lMin, lMax, rMin, rMax = rMin, rMax, lMin, lMax
 		}
 
-		if (e1min <= e0max && e1max <= e0max) || (e1min == e0min && e1max <= e1max) {
+		//  (  right entirely in left  )  or  ( left entirely in right )
+		if (rMin <= lMax && rMax <= lMax) || (rMin == lMin) {
 			sum += 1
-			sum2 += 1
-		} else if e1min <= e0max {
+		}
+
+		if rMin <= lMax { // any overlap
 			sum2 += 1
 		}
 
