@@ -6,13 +6,8 @@ saniday=$(echo ${1} | sed -z 's/^0//g') # remove leading 0 if present
 
 mkdir "day${1}"
 
-# Not working :(
-curl "https://adventofcode.com/2021/day/${saniday}/input" \
-  -H 'pragma: no-cache' \
-  -H 'cache-control: no-cache' \
-  -H 'user-agent: idk' \
-  -H "$(cat cookie-header.txt)" \
-  -H 'accept: text/html' > "./day${1}/input.txt"
+touch "./day${1}/sample.txt"
+touch "./day${1}/input.txt"
 
 cat > "./day${1}/day.go" << EOF
 package day${1}
@@ -24,8 +19,8 @@ import (
 	"strconv"
 )
 
-func Run(){
-	f, _ := os.Open("./day${1}/input.txt")
+func Run(title, file string) {
+	f, _ := os.Open(file)
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -39,7 +34,8 @@ func Run(){
 		}
 	}
 
-    fmt.Printf("initialized day %v\n", "${1}")
+    fmt.Printf("%v - part one: %v\n", title, ${1})
+    fmt.Printf("%v - part two: %v\n", title, ${1})
 }
 EOF
 
@@ -51,7 +47,8 @@ import (
 )
 
 func main() {
-	day${1}.Run()
+	day${1}.Run("sample", "./day${1}/sample.txt")
+	day${1}.Run("real", "./day${1}/input.txt")
 }
 EOF
 
