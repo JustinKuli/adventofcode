@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/JustinKuli/aoc2022/day14"
+	"github.com/JustinKuli/aoc2022/day15"
 )
 
 func main() {
-	day14.Run("sample", "./day14/sample.txt")
-	day14.Run("real", "./day14/input.txt")
+	day15.Run("sample", "./day15/sample.txt")
+	day15.Run("real", "./day15/input.txt")
 }
