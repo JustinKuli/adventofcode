@@ -3,13 +3,13 @@ package day01
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"sort"
-	"strconv"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day01/input.txt")
+	f := aoc.MustOpen("./day01/input.txt")
 	defer f.Close()
 
 	s := bufio.NewScanner(f)
@@ -22,8 +22,7 @@ func Run() {
 			elfCals = append(elfCals, calSum)
 			calSum = 0
 		} else {
-			lineCals, _ := strconv.Atoi(line)
-			calSum += lineCals
+			calSum += aoc.MustInt(line)
 		}
 	}
 

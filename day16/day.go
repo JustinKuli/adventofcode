@@ -3,10 +3,10 @@ package day16
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"sort"
-	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 type node struct {
@@ -19,12 +19,12 @@ func nodeFrom(inp string) (string, node) {
 	//  OR    : "Valve JJ has flow rate=21; tunnel leads to valve II"
 	// The differences are annoying...
 	inp = strings.TrimPrefix(inp, "Valve ")
-	name, inp, _ := strings.Cut(inp, " has flow rate=")
-	flowStr, inp, _ := strings.Cut(inp, "; tunnel")
+	name, inp := aoc.MustCut(inp, " has flow rate=")
+	flowStr, inp := aoc.MustCut(inp, "; tunnel")
 	inp = strings.TrimPrefix(inp, "s lead to valves ")
 	inp = strings.TrimPrefix(inp, " leads to valve ")
 
-	flow, _ := strconv.Atoi(flowStr)
+	flow := aoc.MustInt(flowStr)
 	cxns := strings.Split(inp, ", ")
 
 	result := node{rate: flow, connections: cxns}
@@ -32,8 +32,10 @@ func nodeFrom(inp string) (string, node) {
 	return name, result
 }
 
-var nodes map[string]node
-var memos map[string]int
+var (
+	nodes map[string]node
+	memos map[string]int
+)
 
 func docopy(open []string) []string {
 	newcopy := make([]string, len(open), len(open)+1) // might add up to 1 item
@@ -46,7 +48,7 @@ func Run(title, file string) {
 	// 	return
 	// }
 
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -80,8 +82,10 @@ func contains(open []string, name string) bool {
 	return false
 }
 
-const pathfmt string = "%v:%v-%v\n"
-const debugpath = false
+const (
+	pathfmt   string = "%v:%v-%v\n"
+	debugpath        = false
+)
 
 func brute(pos, prev, path string, open []string, released, timeLeft int) (int, string) {
 	memopos := fmt.Sprintf("%v:%v:%v:%v", timeLeft, pos, strings.Join(open, ","), released)

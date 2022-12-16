@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"os"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day03/input.txt")
+	f := aoc.MustOpen("./day03/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)

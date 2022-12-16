@@ -3,13 +3,12 @@ package day09
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day09/input.txt")
+	f := aoc.MustOpen("./day09/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -25,7 +24,7 @@ func Run() {
 	for fs.Scan() {
 		line := fs.Text()
 
-		direction, countstr, _ := strings.Cut(line, " ")
+		direction, countstr := aoc.MustCut(line, " ")
 		var di, dj int
 		switch direction {
 		case "U":
@@ -38,7 +37,7 @@ func Run() {
 			di, dj = 1, 0
 		}
 
-		for count, _ := strconv.Atoi(countstr); count > 0; count-- {
+		for count := aoc.MustInt(countstr); count > 0; count-- {
 			// update head
 			i[0] += di
 			j[0] += dj

@@ -17,21 +17,19 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run(title, file string) {
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
 	sum := 0
 	for fs.Scan() {
 		line := fs.Text()
-
-		lineVal, err := strconv.Atoi(line)
-		if err != nil {
-			sum += lineVal
-		}
+		sum += aoc.MustInt(line)
 	}
 
     fmt.Printf("%v - part one: %v\n", title, ${1})

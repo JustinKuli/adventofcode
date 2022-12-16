@@ -3,9 +3,9 @@ package day05
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 /* Initial state
@@ -21,7 +21,7 @@ import (
 */
 
 func Run() {
-	f, _ := os.Open("./day05/input.txt")
+	f := aoc.MustOpen("./day05/input.txt")
 	defer f.Close()
 
 	stack := make([][]rune, 10)
@@ -40,14 +40,14 @@ func Run() {
 	for fs.Scan() {
 		line := fs.Text()
 
-		p1, p2, _ := strings.Cut(line, " from ")
+		p1, p2 := aoc.MustCut(line, " from ")
 
 		numstr := strings.TrimPrefix(p1, "move ")
-		num, _ := strconv.Atoi(numstr)
+		num := aoc.MustInt(numstr)
 
-		startstr, endstr, _ := strings.Cut(p2, " to ")
-		start, _ := strconv.Atoi(startstr)
-		end, _ := strconv.Atoi(endstr)
+		startstr, endstr := aoc.MustCut(p2, " to ")
+		start := aoc.MustInt(startstr)
+		end := aoc.MustInt(endstr)
 
 		// Part one
 		// for num > 0 {

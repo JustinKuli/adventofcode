@@ -3,13 +3,12 @@ package day04
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day04/input.txt")
+	f := aoc.MustOpen("./day04/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -18,15 +17,15 @@ func Run() {
 	for fs.Scan() {
 		// each line has a pair of section assignments
 		line := fs.Text()
-		sectionAssignment := strings.Split(line, ",")
+		left, right := aoc.MustCut(line, ",")
 
-		leftLimits := strings.Split(sectionAssignment[0], "-")
-		lMin, _ := strconv.Atoi(leftLimits[0])
-		lMax, _ := strconv.Atoi(leftLimits[1])
+		lMinStr, lMaxStr := aoc.MustCut(left, "-")
+		lMin := aoc.MustInt(lMinStr)
+		lMax := aoc.MustInt(lMaxStr)
 
-		rightLimits := strings.Split(sectionAssignment[1], "-")
-		rMin, _ := strconv.Atoi(rightLimits[0])
-		rMax, _ := strconv.Atoi(rightLimits[1])
+		rMinStr, rMaxStr := aoc.MustCut(right, "-")
+		rMin := aoc.MustInt(rMinStr)
+		rMax := aoc.MustInt(rMaxStr)
 
 		if rMin < lMin {
 			// swap so the left range actually starts to the left

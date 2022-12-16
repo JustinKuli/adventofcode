@@ -3,12 +3,13 @@ package day02
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day02/input.txt")
+	f := aoc.MustOpen("./day02/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)

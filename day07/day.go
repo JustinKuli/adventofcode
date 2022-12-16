@@ -3,14 +3,14 @@ package day07
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day07/input.txt")
+	f := aoc.MustOpen("./day07/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -33,7 +33,7 @@ func Run() {
 			// Ensure that every directory ever listed is in our sizes map
 			sizes[filepath.Join(dir, parts[1])] += 0
 		default:
-			size, _ := strconv.Atoi(parts[0])
+			size := aoc.MustInt(parts[0])
 			sizes[dir] += size
 		}
 	}

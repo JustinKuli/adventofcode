@@ -3,9 +3,8 @@ package day10
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 type communicator struct {
@@ -36,7 +35,7 @@ func (c *communicator) Tick() int {
 }
 
 func Run(title, file string) {
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	c := communicator{
@@ -50,14 +49,14 @@ func Run(title, file string) {
 	for fs.Scan() {
 		line := fs.Text()
 
-		instruction, valstr, _ := strings.Cut(line, " ")
+		instruction, valstr := aoc.MustCut(line, " ")
 
 		switch instruction {
 		case "addx":
 			strengthSum += c.Tick()
 			strengthSum += c.Tick()
 
-			val, _ := strconv.Atoi(valstr)
+			val := aoc.MustInt(valstr)
 			c.registerX += val
 		case "noop":
 			strengthSum += c.Tick()

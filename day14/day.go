@@ -3,9 +3,9 @@ package day14
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 type coord struct {
@@ -14,9 +14,9 @@ type coord struct {
 }
 
 func getCoord(str string) coord {
-	xstr, ystr, _ := strings.Cut(str, ",")
-	x, _ := strconv.Atoi(xstr)
-	y, _ := strconv.Atoi(ystr)
+	xstr, ystr := aoc.MustCut(str, ",")
+	x := aoc.MustInt(xstr)
+	y := aoc.MustInt(ystr)
 	return coord{
 		x: x,
 		y: y,
@@ -24,7 +24,7 @@ func getCoord(str string) coord {
 }
 
 func Run(title, file string) {
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	occupied := make(map[coord]bool)

@@ -3,9 +3,9 @@ package day15
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 const (
@@ -74,7 +74,7 @@ func (m *coordmap) fillmd(center_y, center_x, dist int, val int8) {
 }
 
 func RunOld(title, file string) {
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	coordyx := coordmap{m: make(map[int]map[int]int8)} // y, then x.
@@ -85,14 +85,14 @@ func RunOld(title, file string) {
 		line := fs.Text()
 
 		line = strings.TrimPrefix(line, "Sensor at x=")
-		sxStr, line, _ := strings.Cut(line, ", y=")
-		syStr, line, _ := strings.Cut(line, ": closest beacon is at x=")
-		bxStr, byStr, _ := strings.Cut(line, ", y=")
+		sxStr, line := aoc.MustCut(line, ", y=")
+		syStr, line := aoc.MustCut(line, ": closest beacon is at x=")
+		bxStr, byStr := aoc.MustCut(line, ", y=")
 
-		sx, _ := strconv.Atoi(sxStr)
-		sy, _ := strconv.Atoi(syStr)
-		bx, _ := strconv.Atoi(bxStr)
-		by, _ := strconv.Atoi(byStr)
+		sx := aoc.MustInt(sxStr)
+		sy := aoc.MustInt(syStr)
+		bx := aoc.MustInt(bxStr)
+		by := aoc.MustInt(byStr)
 
 		coordyx.put(sy, sx, sensor)
 		coordyx.put(by, bx, beacon)

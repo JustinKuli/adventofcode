@@ -3,12 +3,12 @@ package day08
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 func Run() {
-	f, _ := os.Open("./day08/input.txt")
+	f := aoc.MustOpen("./day08/input.txt")
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -17,7 +17,7 @@ func Run() {
 		line := fs.Text()
 		lineHeights := make([]int, len(line))
 		for i, r := range line {
-			h, _ := strconv.Atoi(string(r))
+			h := aoc.MustInt(string(r))
 			lineHeights[i] = h
 		}
 

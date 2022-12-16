@@ -3,9 +3,10 @@ package day15
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/JustinKuli/aoc2022/aoc"
 )
 
 type interval struct {
@@ -67,7 +68,7 @@ func deduplicate(intervals map[string]interval, maxcoord int) bool {
 }
 
 func Run(title, file string) {
-	f, _ := os.Open(file)
+	f := aoc.MustOpen(file)
 	defer f.Close()
 
 	fs := bufio.NewScanner(f)
@@ -92,14 +93,14 @@ func Run(title, file string) {
 			line := text
 
 			line = strings.TrimPrefix(line, "Sensor at x=")
-			sxStr, line, _ := strings.Cut(line, ", y=")
-			syStr, line, _ := strings.Cut(line, ": closest beacon is at x=")
-			bxStr, byStr, _ := strings.Cut(line, ", y=")
+			sxStr, line := aoc.MustCut(line, ", y=")
+			syStr, line := aoc.MustCut(line, ": closest beacon is at x=")
+			bxStr, byStr := aoc.MustCut(line, ", y=")
 
-			sx, _ := strconv.Atoi(sxStr)
-			sy, _ := strconv.Atoi(syStr)
-			bx, _ := strconv.Atoi(bxStr)
-			by, _ := strconv.Atoi(byStr)
+			sx := aoc.MustInt(sxStr)
+			sy := aoc.MustInt(syStr)
+			bx := aoc.MustInt(bxStr)
+			by := aoc.MustInt(byStr)
 
 			md := mandist(sx-bx, sy-by)
 
