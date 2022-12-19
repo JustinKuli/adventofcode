@@ -15,8 +15,6 @@ package day${1}
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/JustinKuli/aoc2022/aoc"
 )
