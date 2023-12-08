@@ -1,0 +1,128 @@
+#!/usr/bin/env node
+
+const fs = require('node:fs');
+
+fs.readFile('./sample.txt', (err, data) => {
+// fs.readFile('./input.txt', (err, data) => {
+    if (err) {
+        console.error(err);
+    }
+    
+    const lines = data.toString().split('\n')
+
+    let seeds = []
+    let maps = []
+    let mapidx = -1
+
+    lines.forEach((line, i) => {
+        if (i == 0) {
+            line.split(" ").forEach((s, si, ss) => {
+                // // Part 1
+                // if (Number(s)) {
+                //     seeds.push(Number(s))
+                // }
+
+                // Part 2
+                // if (si%2 === 1) {
+                if (si > 0) {
+                    seeds.push({
+                        start: Number(ss[si]),
+                        len: 1
+                        // len: Number(ss[si+1])
+                    })
+                }
+            })
+        } else if (line.length > 1) {
+            const parts = line.split(" ")
+            if (parts[1] === "map:") {
+                mapidx++
+                maps.push([])
+            } else { // reading numbers for maps[mapidx]
+                maps[mapidx].push({
+                    dst: Number(parts[0]),
+                    src: Number(parts[1]),
+                    len: Number(parts[2])
+                })
+            }
+        }
+    })
+
+    maps.forEach((m, mapset) => {
+        console.log("MAP SET", mapset)
+
+        let newseeds = [...seeds]
+        m.forEach((mapping, mi) => {
+            console.log("mapping", mapping)
+            console.log("seeds", seeds)
+            let unmappedseeds = []
+            for (let i = 0; i < seeds.length; i++) {
+                const s = seeds[i]
+
+                // Part 1
+                // let diff = seeds[i] - mapping.src
+                // if (0 <= diff && diff < mapping.len) {
+                //     // console.log("mapping", mi, "sends", s, "to", mapping.dst + diff)
+                //     newseeds[i] = mapping.dst + diff
+                // }
+
+                // Part 2
+                if ((s.start+s.len < mapping.src) || (mapping.src+mapping.len < s.start)) {
+                    console.log("no overlap", s)
+                    unmappedseeds.push(s)
+                    continue // no overlap between seed and mapping
+                }
+
+                let points = [s.start, s.start+s.len-1, mapping.src, mapping.src+mapping.len-1]                
+                let sorted = points.sort((a, b) => a - b)
+                // let effmap = [sorted[1], sorted[2]]
+                let startdiff = sorted[1] - mapping.src
+                let newlen = sorted[2] - sorted[1] + 1
+                newseeds[i] = {
+                    start: mapping.dst + (startdiff),
+                    len: newlen
+                }
+                console.log("points", points)
+                console.log("mapped", newseeds[i])
+
+                // now get the unmapped part (if there is one)
+                if (s.start === sorted[0] && mapping.src === sorted[1]) {
+                    unmappedseeds.push({
+                        start: s.start,
+                        len: sorted[1] - sorted[0] + 1
+                    })
+                    console.log("unmapped(1)", unmappedseeds[unmappedseeds.length-1])
+                } else if (sorted[2] === mapping.src+mapping.len-1 && sorted[3] === s.start+s.len-1) {
+                    unmappedseeds.push({
+                        start: sorted[2],
+                        len: sorted[3] - sorted[2] + 1
+                    })
+                    console.log("unmapped(2)", unmappedseeds[unmappedseeds.length-1])
+                }
+            }
+            console.log("unmapped", unmappedseeds)
+            seeds = unmappedseeds
+        })
+
+        console.log("newseeds", newseeds)
+        seeds = newseeds
+    })
+
+    // Part 1
+    // let ans = seeds[0]
+    // seeds.forEach((s) => {
+    //     if (s < ans) {
+    //         ans = s
+    //     }
+    // })
+
+    // Part 2
+    console.log(seeds)
+    let ans = seeds[0].start
+    seeds.forEach((s) => {
+        if (s.start < ans) {
+            ans = s.start
+        }
+    })
+
+    console.log(ans)
+});
