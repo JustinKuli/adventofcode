@@ -1,4 +1,7 @@
-input.txt
+input*.txt
+sample*.txt
+output*.txt
+notes*.txt
 
 # Logs
 logs
