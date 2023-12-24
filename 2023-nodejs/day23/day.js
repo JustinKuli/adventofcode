@@ -64,7 +64,12 @@ fs.readFile('./input.txt', (err, data) => {
                     node: fun.nodePos,
                     next: next,
                 })
-            })    
+            })
+
+            uncalculated.push({
+                node: fun.nodePos,
+                next: fun.prev
+            })
         }
     }
 
@@ -102,14 +107,7 @@ fs.readFile('./input.txt', (err, data) => {
 
     console.log(longestPath)
 
-    // let debug = {...nodes}
-    // longestPath.forEach((p) => {
-    //     delete debug[p]
-    // })
-
-    // console.log(debug)
-
-    console.log("Part One", longest) // 5418 is too low
+    console.log("Part Two", longest)
 });
 
 function followUntilNode(loc_in, prev_in, map) {
@@ -130,7 +128,8 @@ function followUntilNode(loc_in, prev_in, map) {
     return {
         nodePos: loc,
         distance: distance,
-        nexts: next
+        nexts: next,
+        prev: prev
     }
 }
 
@@ -174,56 +173,4 @@ function nextAdj(loc, prev, map) {
 
 function str(pt) {
     return pt.row + "," + pt.col
-}
-
-function nonWorkingDjkistras() {
-    // Let's try djikstra's
-
-    // 1
-    let unvisited = {}
-    Object.keys(nodes).forEach((n) => {
-        unvisited[n] = true
-
-        // 2
-        nodes[n].tentative = 999 // anything positive might work, this just helps debug
-    })
-    nodes[str(start)].tentative = 0
-
-    let curr = {...start}
-    console.log("curr", curr)
-
-    while (Object.keys(unvisited).length !== 0) {
-        console.log(nodes)
-        console.log(unvisited)
-
-        // 3
-        Object.keys(nodes[str(curr)].neighbors).forEach((neighbor) => {
-            if (neighbor in unvisited) {
-                let tent = nodes[str(curr)].tentative - nodes[str(curr)].neighbors[neighbor]
-                if (tent < nodes[neighbor].tentative) {
-                    nodes[neighbor].tentative = tent
-                }
-            }
-        })
-
-        // 4
-        delete unvisited[str(curr)]
-
-        // 5 might not apply - so just end when there are no more unvisiteds
-
-        // 6 - brute looop to find the biggest unvisited
-        let smallest = 9999
-        let next = ""
-        Object.keys(unvisited).forEach((n) => {
-            if (nodes[n].tentative < smallest) {
-                smallest = nodes[n].tentative
-                next = n
-            }
-        })
-
-        curr.row = next.split(",")[0]
-        curr.col = next.split(",")[1]
-
-        console.log("curr", curr)
-    }
 }
