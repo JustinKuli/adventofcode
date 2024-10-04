@@ -1,9 +1,12 @@
 # advent2023-nodejs
 
 My code for Advent of Code 2023.
-This year I'm doing it in Node.js (apologies in advance - this is not my usual coding language, so I'll probably do some things really oddly).
+This year I'm doing it in Node.js (sorry in advance).
 
-Previous years:
--  2022, Go - https://github.com/JustinKuli/aoc2022
--  2021, Rust - https://github.com/JustinKuli/adventofcode2021
--  2020, Python - https://github.com/JustinKuli/adventofcode2020
+|Mon|Tue|Wed|Thu|Fri|Sat|Sun|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| | | | | |1 ⭐⭐|2 ⭐⭐|
+|3 ⭐⭐|4 ⭐⭐|5 ⭐⭐|6 ⭐⭐|7 ⭐⭐|8 ⭐⭐|9 ⭐⭐|
+|10 ⭐⭐|11 ⭐⭐|12 ⭐⭐|13 ⭐⭐|14 ⭐⭐|15 ⭐⭐|16 ⭐⭐|
+|17 ⭐⭐|18 ⭐⭐|19 ⭐⭐|20 ★|21 ★|22 ⭐⭐|23 ⭐⭐|
+|24 ⭐⭐|25 ★| | | | | |
