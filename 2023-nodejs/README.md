@@ -10,3 +10,7 @@ This year I'm doing it in Node.js (sorry in advance).
 |10 ⭐⭐|11 ⭐⭐|12 ⭐⭐|13 ⭐⭐|14 ⭐⭐|15 ⭐⭐|16 ⭐⭐|
 |17 ⭐⭐|18 ⭐⭐|19 ⭐⭐|20 ★|21 ★|22 ⭐⭐|23 ⭐⭐|
 |24 ⭐⭐|25 ★| | | | | |
+
+Best global ranks:
+- Part 1: Day 24, 1317
+- Part 2: Day 16, 1741
