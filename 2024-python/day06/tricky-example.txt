@@ -11,14 +11,14 @@ Difficult map:
 .....##...
 ..........
 
-Path with no obstacles, including "backtracking":
+Path with no obstacles, including any "backtracking":
 
-..........
-.#........
-.+-----+#.
+.......|..
+.#.....|..
+-+-----+#.
 .^..#..|..
 .|....#|..
--------+..
+-------+--
 .|.....#..
 .|#.......
 .|...##...
